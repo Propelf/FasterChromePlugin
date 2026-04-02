@@ -1,4 +1,4 @@
-# FastChrome ⚡️
+# FastChrome 
 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Chrome](https://img.shields.io/badge/Chrome-Extension-orange.svg)](https://chrome.google.com/webstore)
@@ -50,11 +50,49 @@
 
 ---
 
+## 🛠 技术原理
+
+本插件主要采用了 Chrome 108+ 支持的 Speculation Rules API。
+
+预判逻辑：当鼠标在链接上悬停超过 65ms 时，插件认为用户有极大概率访问该页面。
+
+内存保护：采用 FIFO（先进先出）队列管理注入的规则标签，确保页面 head 始终保持整洁。
+
+兼容性：在不支持推测规则的浏览器上，会自动降级使用传统的 <link rel="prefetch">。
+
+---
+
+## 📂 文件结构
+
+manifest.json：扩展程序配置文件。
+
+content.js：核心逻辑脚本。
+
+icons/：存放插件图标 (16x16, 48x48, 128x128)。
+
+README.md：项目说明文档。
+
+---
+
+## 🙏 致谢 (Acknowledgments)
+
+本项目在开发过程中参考了以下优秀项目与文章的思路：
+
+## 1.ChromeAppHeroes - Faster Chrome
+感谢 zhaoolee 提供的插件英雄榜推荐与启发。
+
+## 2.instant.page
+感谢 Alexandre Dieulot 提出的即时预加载理念及其优秀的开源基础。
+
+---
+
 ## 📝 注意事项
+
 * 本插件目前主要针对 **Windows 桌面端** 的鼠标行为进行优化。
 * 预加载效果取决于目标网站对 `Speculation Rules API` 的兼容性及页面本身的渲染速度。
 
 ---
 
 ### 开源协议
+
 [MIT License](LICENSE) © 2026
