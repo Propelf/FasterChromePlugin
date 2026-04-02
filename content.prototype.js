@@ -1,13 +1,34 @@
 /**
- * Super Prefetcher (Instant Page) - Debug Version
- */
+ 为了方便实时看到效果(确定这个插件正在运行)，这个.js文件加入了三个调试功能：
+
+1.控制台彩色日志：当鼠标悬停触发预加载时，控制台会打印出带颜色的 URL 信息。
+
+2.元素高亮：成功触发预加载的链接，其边框会变成亮绿色，让你一眼看出哪些链接被处理了。
+
+3.队列统计：每次预加载后都会显示当前 DOM 中 speculationrules 标签的数量。
+
+如何测试：
+1.打开控制台：在网页上按 F12，点击 Console（控制台）。
+
+2.移动鼠标：将鼠标滑过页面上的任意普通链接（下载链接被屏蔽）。将会看到反馈：
+
+3.控制台：会出现绿色的触发预加载日志。
+
+4.页面上：被触发的链接周围会出现一个绿色的虚线框。
+
+5.队列监控：如果你滑过超过10个链接，你会看到队列已满，移除旧规则的提示。
+
+6.Network 验证：在开发者工具的Network选项卡里，搜索prefetch，你应该能看到实际的网络请求。
+**/
+
+
 
 let _speculationRulesType = 'prefetch'
   , _useWhitelist = false
   , _delayOnHover = 65
   , _mouseoverTimer
   , _preloadedList = new Set()
-  , _scriptElementsQueue = [] 
+  , _scriptElementsQueue = []
 
 // 调试开关
 const DEBUG_MODE = true;
@@ -15,7 +36,7 @@ const DEBUG_MODE = true;
 /**
  * [配置项] MAX_SCRIPT_COUNT
  */
-let MAX_SCRIPT_COUNT = 10; 
+let MAX_SCRIPT_COUNT = 10;
 
 const EXCLUDED_EXTENSIONS = [
   '.zip', '.rar', '.7z', '.tar', '.gz', '.bz2', '.xz', '.iso', '.dmg', '.pkg', '.z', '.tgz',
@@ -80,11 +101,11 @@ function preload(url, fetchPriority = 'auto', anchorElement = null) {
   if (_preloadedList.has(url)) return;
 
   if (DEBUG_MODE) {
-    console.log(`%c[Prefetcher] 🚀 触发预加载: ${url}`, "color: #28a745; font-weight: bold; border: 1px solid #28a745; padding: 2px;");
+    console.log(`%c[Prefetcher]触发预加载: ${url}`, "color: #28a745; font-weight: bold; border: 1px solid #28a745; padding: 2px;");
     // 给链接加个临时的高亮边框（可选）
     if (anchorElement) {
-        anchorElement.style.outline = "2px dashed #28a745";
-        anchorElement.style.outlineOffset = "2px";
+      anchorElement.style.outline = "2px dashed #28a745";
+      anchorElement.style.outlineOffset = "2px";
     }
   }
 
@@ -108,7 +129,7 @@ function preloadUsingSpeculationRules(url) {
     const oldScript = _scriptElementsQueue.shift();
     if (oldScript && oldScript.parentNode) {
       oldScript.remove();
-      if (DEBUG_MODE) console.log(`%c[Prefetcher] 🗑️ 队列已满，移除旧规则。当前队列: ${_scriptElementsQueue.length}/${MAX_SCRIPT_COUNT}`, "color: #ffc107");
+      if (DEBUG_MODE) console.log(`%c[Prefetcher]队列已满，移除旧规则。当前队列: ${_scriptElementsQueue.length}/${MAX_SCRIPT_COUNT}`, "color: #ffc107");
     }
   }
 
@@ -133,7 +154,7 @@ function mouseoverListener(event) {
   if (!isPreloadable(anchorElement)) return;
 
   anchorElement.addEventListener('mouseout', mouseoutListener, { passive: true });
-  
+
   _mouseoverTimer = setTimeout(() => {
     preload(anchorElement.href, 'high', anchorElement);
     _mouseoverTimer = null;
